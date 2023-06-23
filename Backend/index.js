@@ -12,8 +12,10 @@ connectToMongo()
 const app = express()
 const port = 3000
 
-// Available Routes
+// Adding Middlewares :
+app.use(express.json())  // to view the request body data
 
+// Available Routes
 // Basic First Route
 app.get('/', (req, res) => {
   res.send("Hello Sanjay! <br> This is Sample Route in Backend")

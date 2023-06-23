@@ -10,12 +10,14 @@ router.get('/',(req,res)=>{
 
     console.log("Here, you will get authenticate here")
 
-    // we can send the response in the form of json
-    let obj = {
-        a : "this",
-        num : 1610
-    }
-    res.json(obj)
+    // To access the body of the request, we have to use the req.body function to get the data in the request body
+    console.log(req.body)
+    // But for using req.body() :
+    // Two things have to be done :
+    //      - Use the middle ware express.json() to access and view the json data from the request
+    //      - Add the content-type as "application/json" in the request Headers
+
+    res.send("This is Authentication Page")
 })
 
 module.exports = router
