@@ -6,7 +6,11 @@ const express = require('express');
 // Create a router of the express
 const router = express.Router()
 
-router.get('/',(req,res)=>{
+// Importing the user schema from User Mongoose Model
+const User = require("../models/User");
+
+// Also, we have to change the get request to post request
+router.post('/', (req, res) => {
 
     console.log("Here, you will get authenticate here")
 
@@ -17,7 +21,21 @@ router.get('/',(req,res)=>{
     //      - Use the middle ware express.json() to access and view the json data from the request
     //      - Add the content-type as "application/json" in the request Headers
 
-    res.send("This is Authentication Page")
+
+    // Now, saving the data in the Database that we get from the request API body
+    // Also using the schema of the user to save the data as per the schema
+    const userdata = User(req.body);
+    
+    // Saving the Data in the Moongose Database !
+    if(userdata.save()){
+        console.log("Data Saved in the Database !");
+    }
+    else{
+        console.log("Data not saved in the Database !");
+    }
+
+    res.send("This is Authentication Page");
+
 })
 
 module.exports = router
