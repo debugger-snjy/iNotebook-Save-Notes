@@ -9,33 +9,39 @@ const router = express.Router()
 // Importing the user schema from User Mongoose Model
 const User = require("../models/User");
 
+// Importing the express-validator
+const { body, validationResult } = require('express-validator');
+
 // Also, we have to change the get request to post request
-router.post('/', (req, res) => {
+// We will add the validations after the endpoint in the post method
+router.post('/', [
+    body("name","Name is Empty").notEmpty(),
+    body("email","email is Empty").notEmpty(),
+    body("password","password is Empty").notEmpty(),
+
+    body("name","Enter a valid Name").isAlpha(),
+    body("email","Enter a valid Email").isEmail(),
+    body("password","Enter a valid Password").isLength({ min: 5, max : 20})
+], (req, res) => {
 
     console.log("Here, you will get authenticate here")
 
-    // To access the body of the request, we have to use the req.body function to get the data in the request body
-    console.log(req.body)
-    // But for using req.body() :
-    // Two things have to be done :
-    //      - Use the middle ware express.json() to access and view the json data from the request
-    //      - Add the content-type as "application/json" in the request Headers
+    // Getting the Results after validations
+    const errors = validationResult(req);
 
-
-    // Now, saving the data in the Database that we get from the request API body
-    // Also using the schema of the user to save the data as per the schema
-    const userdata = User(req.body);
-    
-    // Saving the Data in the Moongose Database !
-    if(userdata.save()){
-        console.log("Data Saved in the Database !");
-    }
-    else{
-        console.log("Data not saved in the Database !");
+    // If we have errors :
+    if (!errors.isEmpty()) {
+        // sending the errors that are present
+        return res.status(400).json({ errors: errors.array() });
     }
 
-    res.send("This is Authentication Page");
-
+    // After Validating :
+    // Creating the User and it will be saved in the Database
+    User.create({
+        name : req.body.name,
+        password : req.body.password,
+        email : req.body.email
+    }).then(userData => res.json(userData))
 })
 
 module.exports = router
