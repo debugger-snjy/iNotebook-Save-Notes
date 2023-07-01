@@ -14,7 +14,8 @@ const { body, validationResult } = require('express-validator');
 
 // Also, we have to change the get request to post request
 // We will add the validations after the endpoint in the post method
-router.post('/', [
+// Here, no login required
+router.post('/createuser', [
     body("name","Name is Empty").notEmpty(),
     body("email","email is Empty").notEmpty(),
     body("password","password is Empty").notEmpty(),
@@ -40,7 +41,7 @@ router.post('/', [
     User.create({
         name : req.body.name,
         password : req.body.password,
-        email : req.body.email
+        email : req.body.email 
     }).then(userData => res.json(userData))
     .catch(err => {
         console.log(err);
