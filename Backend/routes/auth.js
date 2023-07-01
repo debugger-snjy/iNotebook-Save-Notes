@@ -46,6 +46,7 @@ router.post('/createuser', [
         }
         // After Validating :
         // Creating the User if not exists and it will be saved in the Database
+        // TODO : we don't save password in simple text form
         let userData = await User.create({
             name: req.body.name,
             password: req.body.password,
