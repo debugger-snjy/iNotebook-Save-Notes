@@ -42,6 +42,10 @@ router.post('/', [
         password : req.body.password,
         email : req.body.email
     }).then(userData => res.json(userData))
+    .catch(err => {
+        console.log(err);
+        res.json({error : "Account already exists with this Email ID.", description : err.message})
+    })
 })
 
 module.exports = router

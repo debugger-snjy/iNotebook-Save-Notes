@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
+        unique : true
     },
     email : {
         type : String,
@@ -22,4 +23,7 @@ const UserSchema = new mongoose.Schema({
 
 // Exporting the model: 
 // model takes a name and the schema
-module.exports = mongoose.model("user",UserSchema);
+
+const User = mongoose.model("user",UserSchema);
+User.createIndexes() // used to create indexes and don't save duplicates records
+module.exports = User;
