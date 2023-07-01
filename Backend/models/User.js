@@ -13,7 +13,6 @@ const UserSchema = new mongoose.Schema({
     email : {
         type : String,
         required : true,
-        unique : true
     },
     date: {
         type : Date,
@@ -25,5 +24,6 @@ const UserSchema = new mongoose.Schema({
 // model takes a name and the schema
 
 const User = mongoose.model("user",UserSchema);
-User.createIndexes() // used to create indexes and don't save duplicates records
+// User.createIndexes() // used to create indexes and don't save duplicates records
+// To avoid creating 2 indexes, we will remove this and we will verfiy the duplicate user in the code itself (auth.js)
 module.exports = User;

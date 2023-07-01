@@ -10,7 +10,8 @@ const connectToMongo = require('./db');
 connectToMongo()
 
 const app = express()
-const port = 3000
+// Changing the port number as 3000 port is reserved for react which will make us difficult for us later
+const port = 5000
 
 // Adding Middlewares :
 app.use(express.json())  // to view the request body data
