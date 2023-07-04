@@ -70,8 +70,8 @@ router.post('/createuser', [
         // generating salt :
         const salt = await bcrypt.genSalt(10);
         // Generating a secure password & using await as it will return a promise and we have to wait until we get the results
-        const securePass = await bcrypt.hash(req.body.password,salt);
-        
+        const securePass = await bcrypt.hash(req.body.password, salt);
+
         // Getting the Data of the user
         let userData = await User.create({
             name: req.body.name,
@@ -79,7 +79,7 @@ router.post('/createuser', [
             password: securePass,
             email: req.body.email
         })
-        
+
         // We have successfully create a user, we don't return the details
         // We will return some token which will be helpful in login verification
         // Tokens are of 2 Types : Session Tokens and Json Web Token(JWT)
@@ -90,23 +90,23 @@ router.post('/createuser', [
         //      1. Header
         //      2. Payload
         //      3. Signature
-        
+
         // As we have got the userData, we will only save id of the user in the form of JSON
         // and then it will be passed to the jwt and get signed!
         const userID_Data = {
-            user : {
-                id : userData.id,
+            user: {
+                id: userData.id,
             }
         }
-        
+
         // Signing the json web token
-        const authToken = jwt.sign(userID_Data,JWT_SECRET);
+        const authToken = jwt.sign(userID_Data, JWT_SECRET);
 
         // Verifying the JWT Token but it will be needed in another endpoint like login endpoint
         // console.log(jwt.verify(authToken,JWT_SECRET))
-        
+
         // return res.json(userData)
-        return res.json({authToken})
+        return res.json({ authToken })
         // {authToken} is same as {"authToken" : authToken}
 
         // removing the then and catch as we have remove the promise
@@ -121,10 +121,78 @@ router.post('/createuser', [
         // })
     } catch (error) {
         console.log("Error Occured !")
-        console.error("Error : ",error.message)
-        return res.status(500).json({error : "Some Error Occured !", description : error.message})
+        console.error("Error : ", error.message)
+        return res.status(500).json({ error: "Internal Server Error !", description: error.message })
     }
 
 })
+
+// Authenticate a user using POST Request 
+// We are using POST as we are dealing with the passwords
+router.post('/login', [
+    // exists() ==> Used to check that the field shoul not be undefined
+    body("email", "email is Empty").exists(),
+    body("password", "password is Empty").exists(),
+
+    body("email", "Enter a valid Email").isEmail(),
+    body("password", "Enter a valid Password").isLength({ min: 5, max: 20 })
+], async (req, res) => {
+
+    console.log("Here, you will have to login here !")
+
+    // Getting the Results after validations
+    const errors = validationResult(req);
+
+    // If we have errors, sending bad request with errors
+    if (!errors.isEmpty()) {
+        // sending the errors that are present
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    // Getting the Email and password :
+    const { email, password } = req.body;
+
+    // If no errors are present
+    try {
+        // Fetching the records with the email
+        let userWithEmail = await User.findOne({ email });
+
+        // If no record found in the database
+        if (!userWithEmail) {
+            console.log("No Email Found !");
+            return res.status(404).json({ error: "Please try to login with correct credentials !" })
+        }
+
+        // If the code is here that means, user with the given email exists
+        // and now we have to compare the passwords to give user a login
+        // For that, we have password a string and user.password a hash that we get from the database
+        const comparePassword = await bcrypt.compare(password, userWithEmail.password);
+
+        // if password doesn't matches
+        if (!comparePassword) {
+            console.log("No Password Found !");
+            return res.status(404).json({ error: "Please try to login with correct credentials !" })
+        }
+
+        // if password is also same, then returning the authtoken
+        const userID_Data = {
+            user: {
+                id: userWithEmail.id,
+            }
+        }
+
+        // Signing the json web token
+        const authToken = jwt.sign(userID_Data, JWT_SECRET);
+
+        // return res.json(userData)
+        return res.json({ authToken })
+
+    } catch (error) {
+        console.log("Error Occured !")
+        console.error("Error : ", error.message)
+        return res.status(500).json({ error: "Internal Server Error !", description: error.message })
+    }
+
+});
 
 module.exports = router
