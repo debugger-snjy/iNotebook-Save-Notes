@@ -12,6 +12,9 @@ const User = require("../models/User");
 // Importing the express-validator
 const { body, validationResult } = require('express-validator');
 
+// Importing bcryptjs for hashing, salt in password
+const bcrypt = require('bcryptjs');
+
 // Also, we have to change the get request to post request
 // We will add the validations after the endpoint in the post method
 // Here, no login required
@@ -47,9 +50,16 @@ router.post('/createuser', [
         // After Validating :
         // Creating the User if not exists and it will be saved in the Database
         // TODO : we don't save password in simple text form
+        // Here we are saving password in hash form :
+
+        // generating salt :
+        const salt = await bcrypt.genSalt(10);
+        // Generating a secure password & using await as it will return a promise and we have to wait until we get the results
+        const securePass = await bcrypt.hash(req.body.password,salt);
         let userData = await User.create({
             name: req.body.name,
-            password: req.body.password,
+            // password: req.body.password, ==> Removing the Password as simple text and saving it in form of Hash
+            password: securePass,
             email: req.body.email
         })
         return res.json(userData)
