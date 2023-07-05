@@ -21,6 +21,9 @@ const dotenv = require('dotenv');
 // Loads .env file contents into process.env by default
 dotenv.config();
 
+// Importing the Middleware File :
+const fetchUser = require("../middleware/fetchUserId")
+
 // Creating JWT_SECRET :
 // const JWT_SECRET = "Sanjayisagoodcoderok";
 // This should be hidden and not be disclosed
@@ -30,6 +33,7 @@ const JWT_SECRET = process.env.JWT_SECRET_KEY;
 // Importing jsonwebtoken
 const jwt = require("jsonwebtoken");
 
+// Route 1 : Creating user with POST Request. No Login Required
 // Also, we have to change the get request to post request
 // We will add the validations after the endpoint in the post method
 // Here, no login required
@@ -127,7 +131,7 @@ router.post('/createuser', [
 
 })
 
-// Authenticate a user using POST Request 
+// Route 2 : Authenticate a user using POST Request. No Login Required
 // We are using POST as we are dealing with the passwords
 router.post('/login', [
     // exists() ==> Used to check that the field shoul not be undefined
@@ -188,6 +192,40 @@ router.post('/login', [
         return res.json({ authToken })
 
     } catch (error) {
+        console.log("Error Occured !")
+        console.error("Error : ", error.message)
+        return res.status(500).json({ error: "Internal Server Error !", description: error.message })
+    }
+
+});
+
+// Route 3 : Get Details of Loggedin User using POST Request. Login Required
+// For that one, thing is neccessary that the user should be logined in
+// For that, we need the AuthToken to verfiy
+
+// router.post('/getuser', async (req, res) => {
+// Adding the middleware
+router.post('/getuser', fetchUser , async (req, res) => {
+
+    // To Start the code, first of all we have to check whether the user is logged in or not
+    // After it is logged in, we will pass the authToken in the header and from the token we will get the id
+    // If we write code here, then every time when we used the authentication, we have to paste code everytime
+    // So, to make it easier we will use the middleware and that can be used anywhere
+
+    try {
+
+        // Getting the Id of the user
+        let userId = req.user.id;
+
+        // Getting the User details from the id
+        // To get all the data of the user from the id, we use the select() function 
+        // If we don't want any field, we can write "-fieldname".
+        // For not getting password, select("-password")
+        const user = await User.findById(userId).select("-password");
+
+        return res.json(user);
+    }
+    catch (error) {
         console.log("Error Occured !")
         console.error("Error : ", error.message)
         return res.status(500).json({ error: "Internal Server Error !", description: error.message })
