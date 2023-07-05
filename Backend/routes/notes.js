@@ -126,6 +126,7 @@ router.put('/updatenote/:id', fetchUser, [
 
     }
 
+
     // If code is reached here, that's means the note is belong to the user which is logged in and also that note exists
     const updatedNote = await Notes.findByIdAndUpdate(req.params.id,{$set : newNote},{new : true});
     return res.send(updatedNote);
