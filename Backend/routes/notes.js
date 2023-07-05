@@ -72,4 +72,65 @@ router.post('/addnote', fetchUser, [
     }
 
 })
+
+// Route 3 : Updating an existing Note in the database using PUT Request "/api/notes/updatenote"
+// Here, Login is Required ==> Middleware needed
+// Here, we no need to check for the data
+// Also, the user could update his/her note only so for that we have to check for the user as well
+router.put('/updatenote/:id', fetchUser, [
+    body("title", "Title can't be Empty !").notEmpty(),
+    body("description", "Description can't be Empty !").notEmpty(),
+    body("description", "Description should have minimum of 10 Letters !").isLength({ min: 10 })
+], async (req, res) => {
+
+    // Getting the Results after validations
+    const errors = validationResult(req);
+
+    // If we have errors, sending bad request with errors
+    if (!errors.isEmpty()) {
+        // sending the errors that are present
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    // If no errors are present or found
+    const { title, description, tag } = req.body;
+
+    // Create a newNote Object with the new Updated Data 
+    const newNote = {
+        title : title,
+        description : description,
+        tag : tag
+    }
+
+    // Finding whether the same user who created note is updating or not
+    
+    // Finding the note from the database, whether the note exists or not
+    // To access the key from the url, we use req.params.<key>
+    // Here, we access the id from the url, we use req.params.id
+    const note = await Notes.findById(req.params.id);
+
+    // If that note doesn't exists, then returning the Bad Response
+    if (!note){
+        // return res.status(404).json({error : "Note Not Found !"})
+        return res.status(404).send("Note Not Found !");
+    }
+
+    // If note exists in database, then getting its user
+    // and then comparing that with the user which has been logged in (From where we get this ?)
+    // We will get the id of user which is logged in from the middle ware or from the fetchUser function
+    if(note.user.toString() !== req.user.id){
+        // the note don't belong to that user and should not have any right ot update
+        // 401 - Unauthorized
+        // return res.status(401).json({error : "Access Denied !"})
+        return res.status(404).send("Access Denied !");
+
+    }
+
+
+    // If code is reached here, that's means the note is belong to the user which is logged in and also that note exists
+    const updatedNote = await Notes.findByIdAndUpdate(req.params.id,{$set : newNote},{new : true});
+    return res.send(updatedNote);
+
+})
+
 module.exports = router
