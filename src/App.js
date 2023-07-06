@@ -19,11 +19,15 @@ function App() {
                 {/* Adding Navigation Bar */}
                 <Navbar />
 
-                {/* Adding and Setting the Routers */}
-                <Routes>
-                    <Route exact path='/' element={<Home />} />
-                    <Route exact path='/about' element={<About />} />
-                </Routes>
+                <div className="container">
+
+                    {/* Adding and Setting the Routers */}
+                    <Routes>
+                        <Route exact path='/' element={<Home />} />
+                        <Route exact path='/about' element={<About />} />
+                    </Routes>
+                    
+                </div>
 
             </NoteState>
         </>
