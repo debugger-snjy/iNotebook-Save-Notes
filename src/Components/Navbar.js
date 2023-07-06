@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar() {
     const fixednavbarStyle = {
@@ -10,7 +10,17 @@ export default function Navbar() {
         "boxShadow": "0px 0px 9px 5px black",
     }
 
+    let location = useLocation();
+
+    React.useEffect(() => {
+        // Logging for checking
+        // console.log("Getting Location : ",location);
+        // console.log("Getting Location Pathname : ",location.pathname);
+    }, [location]);
+
     return (
+
+
 
         <nav className="navbar navbar-expand-lg bg-dark" style={fixednavbarStyle} data-bs-theme="dark">
             <div className="container-fluid">
@@ -21,7 +31,7 @@ export default function Navbar() {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item">
-                            <Link className="nav-link" aria-current="page" to="/">Home</Link>
+                            <Link className={`nav-link ${location.pathname === "/" ? "active" : "" }`} aria-current="page" to="/">Home</Link>
                         </li>
                         {/* <li className="nav-item">
                                 <Link className="nav-link" to="/">View All Notes</Link>
@@ -30,7 +40,7 @@ export default function Navbar() {
                                 <Link className="nav-link" to="/">Add Note</Link>
                             </li> */}
                         <li className="nav-item">
-                            <Link className="nav-link" to="/about">About</Link>
+                            <Link className={`nav-link ${location.pathname === "/about" ? "active" : "" }`} to="/about">About</Link>
                         </li>
                     </ul>
                     {/* <form className="d-flex" role="search">
