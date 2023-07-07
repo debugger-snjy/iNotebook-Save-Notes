@@ -19,7 +19,11 @@ const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
 
 // Loads .env file contents into process.env by default
-dotenv.config();
+// dotenv.config(); ----> This will not work if Both Backend and Frontend are in same folder
+// Because, it will search for the .env file outside the folder i.e, root (Here, inotebook)
+// So, to specify from where to load the .env file, we will define the path in the config
+dotenv.config({path : "./Backend/.env"});
+// The default path is "/.env"
 
 // Importing the Middleware File :
 const fetchUser = require("../middleware/fetchUserId")
@@ -29,6 +33,7 @@ const fetchUser = require("../middleware/fetchUserId")
 // This should be hidden and not be disclosed
 // Putting it in .env.local
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
+console.log(process.env.JWT_SECRET_KEY);
 
 // Importing jsonwebtoken
 const jwt = require("jsonwebtoken");
