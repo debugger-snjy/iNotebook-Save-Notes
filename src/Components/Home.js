@@ -7,16 +7,21 @@
 import React, { useContext } from 'react'
 
 // Importing NoteContext 
-import NoteContext from '../Context/Notes/NoteContext'
+// import NoteContext from '../Context/Notes/NoteContext'
+
+// Importing the Notes Component
+import Notes from './Notes'
 
 export default function Home() {
 
-    // Using the function to get the data from the context
-    const usernotestate = useContext(NoteContext);
-    console.log(usernotestate);
-    // Destructuring Data
-    const {Notes,setNotes} = usernotestate;
-
+    // Removing the Code as there is no need of context API here !!
+    /* 
+        // Using the function to get the data from the context
+        const usernotestate = useContext(NoteContext);
+        console.log(usernotestate);
+        // Destructuring Data
+        const {Notes,setNotes} = usernotestate;
+    */
     return (
         <>
             <div className="container">
@@ -38,17 +43,11 @@ export default function Home() {
                     <button type="submit" className="btn btn-primary">Submit</button>
                 </form>
                 <hr />
-                <div className="container p-0">
-                    <h2>Your Notes</h2>
 
-                    {/* Getting the notes from the Context API */}
-                    {/* Displaying the data individual from the Array */}
-                    {Notes.map((note)=>{
-                        return note.title;
-                    })}
-                </div>
+                {/* Adding the Notes Component Here */}
+                {/* This will be getting all the notes and displaying it on the page */}
+                <Notes />
             </div>
         </>
     )
 }
-  

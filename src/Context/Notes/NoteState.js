@@ -52,16 +52,16 @@ const NoteState = (props) => {
           "__v": 0
         }
       ];
-    // const {Notes,setNotes} = useState(mynotes); ===========>> LARGE MISTAKE !!!
-    const [Notes,setNotes] = useState(mynotes);
+    // const {Notes,updateNotes} = useState(mynotes); ===========>> LARGE MISTAKE !!!
+    const [userNotes,updateNotes] = useState(mynotes);
 
     return (
 
         // we will pass all the things in value that we have to pass
         // Passing the State and function which will update it
         // Here, {state,updateState} ===> {state:state, updateState:updateState}
-        // Passing the Notes and setNotes in the context
-        <NoteContext.Provider value={{Notes,setNotes}}>
+        // Passing the userNotes and updateNotes in the context
+        <NoteContext.Provider value={{userNotes,updateNotes}}>
             {props.children}
         </NoteContext.Provider>
     );
