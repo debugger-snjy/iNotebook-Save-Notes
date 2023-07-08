@@ -15,3 +15,11 @@ code {
 .noteCard{
   margin: 10px 0px;
 }
+
+.icons{
+  cursor: pointer;
+}
+
+#root{
+  margin-bottom: 100px;
+}
