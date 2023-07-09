@@ -8,29 +8,37 @@ import React, { useContext } from 'react'
 
 import NoteContext from '../Context/Notes/NoteContext';
 import NoteItem from './NoteItem';
+import AddNote from './AddNote';
 
 export default function Notes() {
 
     // Using the function to get the data from the context
     const usernotestate = useContext(NoteContext);
     console.log(usernotestate);
+
     // Destructuring Data
-    const { userNotes, updateNotes } = usernotestate;
+    // Removing updateNotes ==> as we have only to display notes right now
+    // Adding addNote => Using this we can add the notes in the userNotes state variable
+    const { userNotes, addNote } = usernotestate;
 
     return (
-        <div className="container p-0">
-            <h2>Your Notes</h2>
-            <div className='row row-cols-3'>
-                {/* Getting the notes from the Context API */}
-                {/* Displaying the data individual from the Array */}
-                {userNotes.map((note) => {
-                    {/* return note.title; */}
-                    {/*Adding the NoteItem Component Here & will pass the note data as props */ }
-                    return (
-                        <NoteItem note={note} key={note._id} />
-                     );
-                })}
+        <>
+            {/* Added the code that we have used in the Home.js */}
+            <AddNote />
+            <div className="container">
+                <h2>Your Notes</h2>
+                <div className='row'>
+                    {/* Getting the notes from the Context API */}
+                    {/* Displaying the data individual from the Array */}
+                    {userNotes.map((note) => {
+                        {/* return note.title; */ }
+                        {/*Adding the NoteItem Component Here & will pass the note data as props */ }
+                        return (
+                            <NoteItem note={note} key={note._id} />
+                        );
+                    })}
+                </div>
             </div>
-        </div>
+        </>
     )
 }

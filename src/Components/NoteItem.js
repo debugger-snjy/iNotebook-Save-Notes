@@ -102,15 +102,15 @@ export default function NoteItem(props) {
 
 
     return (
-        <div className="col" >
+        <div className="col-sm-12 col-md-6 col-lg-4 col-xl-3 col-xxl-3" >
             <div className="card noteCard">
 
                 <div className="card-body">
                     <h5 className="card-title">
                         <div className="d-flex">
                             <div className="p-2 flex-grow-1">{title}</div>
-                            <div className="p-2"><i className="icons fa-solid fa-trash" style={{ "color": "#231a1a" }} onClick={deleteNote}></i></div>
-                            <div className="p-2"><i className="icons fa-solid fa-marker" style={{ "color": "#231a1a" }} onClick={editNote}></i></div>
+                            <div className="p-2"><i className="icons fa-solid fa-trash" style={{ "color": "#2f3434" }} onClick={deleteNote}></i></div>
+                            <div className="p-2"><i className="icons fa-solid fa-marker" style={{ "color": "#2f3434" }} onClick={editNote}></i></div>
                         </div>
                     </h5>
                     <p className="card-text p-2">{description}</p>

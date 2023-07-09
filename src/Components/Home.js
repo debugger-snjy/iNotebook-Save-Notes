@@ -11,10 +11,12 @@ import React, { useContext } from 'react'
 
 // Importing the Notes Component
 import Notes from './Notes'
+import AddNote from './AddNote'
 
 export default function Home() {
 
     // Removing the Code as there is no need of context API here !!
+    // Adding the below code into AddNote as we want it there
     /* 
         // Using the function to get the data from the context
         const usernotestate = useContext(NoteContext);
@@ -24,30 +26,10 @@ export default function Home() {
     */
     return (
         <>
-            <div className="container">
-                <h2 className='my-3'>Add a Note</h2>
-                <form className='my-3'>
-                    <div className="mb-3">
-                        <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
-                        <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                        <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
-                        <input type="password" className="form-control" id="exampleInputPassword1" />
-                    </div>
-                    <div className="mb-3 form-check">
-                        <input type="checkbox" className="form-check-input" id="exampleCheck1" />
-                        <label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
-                    </div>
-                    <button type="submit" className="btn btn-primary">Submit</button>
-                </form>
-                <hr />
+            {/* Removing the Code of Add Note and transfering it to a New Components AddNote  */}
+            {/* Adding that code into Notes Component Only */}
 
-                {/* Adding the Notes Component Here */}
-                {/* This will be getting all the notes and displaying it on the page */}
-                <Notes />
-            </div>
+            <Notes />
         </>
     )
 }
