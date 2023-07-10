@@ -60,6 +60,7 @@ const NoteState = (props) => {
     const addNote = (title, description, tags="Default")=>{
         
         // TODO : Make an API Call Here !
+
         // Checking
         console.log("Adding a new Note");
 
@@ -79,14 +80,27 @@ const NoteState = (props) => {
     }
     
     // Function to Edit a Note
-    const editNote = (id)=>{
+    const editNote = (id, title, description, tags)=>{
+        
+        // TODO : Make an API Call Here !
 
+        for (let index = 0; index < userNotes.length; index++) {
+            const element = userNotes[index];
+            // Finding the Note that we have to edit
+            if(element._id === id){
+                // Editing title, description and tags
+                element.title = title;
+                element.description = description;
+                element.tags = tags;
+            }
+        }
     }
     
     // Function to Delete a Note
     const deleteNote = (id)=>{
         
         // TODO : Make an API Call Here !
+
         console.log("Deleting the note !!");
         // let usersWithoutTim = userNotes.filter(user => user.name !== "Tim");
         // Using the filter function and using that we will not allow the note to be included
