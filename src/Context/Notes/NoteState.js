@@ -85,7 +85,15 @@ const NoteState = (props) => {
     
     // Function to Delete a Note
     const deleteNote = (id)=>{
-
+        
+        // TODO : Make an API Call Here !
+        console.log("Deleting the note !!");
+        // let usersWithoutTim = userNotes.filter(user => user.name !== "Tim");
+        // Using the filter function and using that we will not allow the note to be included
+        let notesWithoutdeletedNote = userNotes.filter((note) => note._id !== id)
+        
+        // Adding the note in the userNotes state variable
+        setuserNotes(notesWithoutdeletedNote)
     }
     
     // Function to Fetch all Note
