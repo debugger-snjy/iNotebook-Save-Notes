@@ -6,6 +6,9 @@ const express = require('express')
 // Now, Importing the connectToMongo function from "db.js"
 const connectToMongo = require('./db');
 
+// Importing cors package :
+const cors = require('cors')
+
 // Checking for the connection
 connectToMongo()
 
@@ -14,6 +17,7 @@ const app = express()
 const port = 5000
 
 // Adding Middlewares :
+app.use(cors()); // Added cors package for removing the cors error
 app.use(express.json())  // to view the request body data
 
 // Available Routes
@@ -41,5 +45,5 @@ app.use('/api/notes',require("./routes/notes"))
 
 // Listening to the port
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`iNotebook app listening on port ${port}`)
 })

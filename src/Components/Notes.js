@@ -4,7 +4,7 @@
 // Step 3 : Use the useContext function to get the data from the Context
 // Step 4 : (Optional) Applying Array Destructuring for separate data variables
 
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 
 import NoteContext from '../Context/Notes/NoteContext';
 import NoteItem from './NoteItem';
@@ -14,12 +14,18 @@ export default function Notes() {
 
     // Using the function to get the data from the context
     const usernotestate = useContext(NoteContext);
-    console.log(usernotestate);
+    // console.log(usernotestate);
 
     // Destructuring Data
     // Removing updateNotes ==> as we have only to display notes right now
-    // Adding addNote => Using this we can add the notes in the userNotes state variable
-    const { userNotes, addNote } = usernotestate;
+    // REMOVED and Transfered to <AddNote /> Component : Adding addNote => Using this we can add the notes in the userNotes state variable --> NO need of this as we have a component of it
+    // Adding fetchAllNotes will fetch all the notes from the database !
+    const { userNotes, fetchAllNotes } = usernotestate;
+
+    // Calling the fetchAllNotes() :
+    useEffect(() => {
+        fetchAllNotes()
+    },[]);
 
     return (
         <>
