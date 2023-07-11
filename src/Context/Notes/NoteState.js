@@ -62,37 +62,64 @@ const NoteState = (props) => {
     const [userNotes, setuserNotes] = useState(mynotes);
 
     // Function to Add a Note
-    const addNote = (title, description, tags="Default")=>{
-        
-        // TODO : Make an API Call Here !
+    const addNote = async (title, description, tags) => {
 
-        // Checking
-        console.log("Adding a new Note");
-
-        // Now, it will set the title,description and tags that we pass !
-        const newNote = {
-            "_id": "64a85eef7a5925329325c7e5",
-            "user": "64a85e527a5925329325c7d9",
-            "title": title,
-            "description": description,
-            "tags": tags,
-            "date": "2023-07-08T22:30:56.453Z",
-            "__v": 0
+        if (tags==="") {
+            tags="Default";
         }
 
-        // Adding the note in the userNotes state variable
-        setuserNotes(userNotes.concat(newNote))
+        // ✅ Done TODO : Make an API Call Here !
+
+        // Adding the API Call to fetch all the notes
+        const response = await fetch(`${host}/api/notes/addnote`, {
+            method: "POST", // As fetchallnotes is a GET method
+            
+            headers: {
+                "Content-Type": "application/json",
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+
+                // Adding the auth-token hardcore till now !
+                "auth-token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRhODVlNTI3YTU5MjUzMjkzMjVjN2Q5In0sImlhdCI6MTY4ODc1NTgzNn0.bn4dh8C4bDBzXC8e4yNhOaBlFMAkXDrgSyJ8gEKYrNU",
+            },
+            
+            body : JSON.stringify({title,description,tags})
+            // No need of body as we will not pass anything in the body
+        });
+        // parses JSON response into native JavaScript objects and using await as the function is asynchronus function
+        const allNotesFromDb = await response.json();
+        
+        // Checking
+        console.log("New Note : ",allNotesFromDb);
+
+        // Now, adding all the notes in the userNotes state variable and will display all the notes from database !
+        setuserNotes(userNotes.concat(allNotesFromDb))
+        
+        // Checking
+        // console.log("Adding a new Note");
+
+        // // Now, it will set the title,description and tags that we pass !
+        // const newNote = {
+        //     "user": "64a85e527a5925329325c7d9",
+        //     "title": title,
+        //     "description": description,
+        //     "tags": tags,
+        //     "date": "2023-07-08T22:30:56.453Z",
+        //     "__v": 0
+        // }
+
+        // // Adding the note in the userNotes state variable
+        // setuserNotes(userNotes.concat(newNote))
     }
-    
+
     // Function to Edit a Note
-    const editNote = (id, title, description, tags)=>{
+    const editNote = (id, title, description, tags) => {
 
         // TODO : Make an API Call Here !
 
         for (let index = 0; index < userNotes.length; index++) {
             const element = userNotes[index];
             // Finding the Note that we have to edit
-            if(element._id === id){
+            if (element._id === id) {
                 // Editing title, description and tags
                 element.title = title;
                 element.description = description;
@@ -102,7 +129,7 @@ const NoteState = (props) => {
     }
 
     // Function to Delete a Note
-    const deleteNote = (id)=>{
+    const deleteNote = (id) => {
 
         // TODO : Make an API Call Here !
 
