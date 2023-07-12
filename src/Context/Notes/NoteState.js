@@ -70,7 +70,7 @@ const NoteState = (props) => {
 
         // ✅ Done TODO : Make an API Call Here !
 
-        // Adding the API Call to fetch all the notes
+        // Adding the API Call to add the notes into the Database
         const response = await fetch(`${host}/api/notes/addnote`, {
             method: "POST", // As fetchallnotes is a GET method
             
@@ -115,7 +115,7 @@ const NoteState = (props) => {
     const editNote = (id, title, description, tags) => {
 
         // TODO : Make an API Call Here !
-
+        
         for (let index = 0; index < userNotes.length; index++) {
             const element = userNotes[index];
             // Finding the Note that we have to edit
@@ -129,9 +129,25 @@ const NoteState = (props) => {
     }
 
     // Function to Delete a Note
-    const deleteNote = (id) => {
+    const deleteNote = async (id) => {
 
         // TODO : Make an API Call Here !
+        // Adding the API Call to delete the notes from the database
+        const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
+            method: "DELETE", // As fetchallnotes is a GET method
+            
+            headers: {
+                "Content-Type": "application/json",
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+
+                // Adding the auth-token hardcore till now !
+                "auth-token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRhODVlNTI3YTU5MjUzMjkzMjVjN2Q5In0sImlhdCI6MTY4ODc1NTgzNn0.bn4dh8C4bDBzXC8e4yNhOaBlFMAkXDrgSyJ8gEKYrNU",
+            },
+            
+            // No need of body as we will not pass anything in the body
+        });
+        // parses JSON response into native JavaScript objects and using await as the function is asynchronus function
+        const allNotesFromDb = await response.json();
 
         console.log("Deleting the note !!");
         // let usersWithoutTim = userNotes.filter(user => user.name !== "Tim");
