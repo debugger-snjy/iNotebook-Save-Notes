@@ -4,7 +4,7 @@
 // Step 3 : Use the useContext function to get the data from the Context
 // Step 4 : (Optional) Applying Array Destructuring for separate data variables
 
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import NoteContext from '../Context/Notes/NoteContext';
 import NoteItem from './NoteItem';
@@ -20,17 +20,103 @@ export default function Notes() {
     // Removing updateNotes ==> as we have only to display notes right now
     // REMOVED and Transfered to <AddNote /> Component : Adding addNote => Using this we can add the notes in the userNotes state variable --> NO need of this as we have a component of it
     // Adding fetchAllNotes will fetch all the notes from the database !
-    const { userNotes, fetchAllNotes } = usernotestate;
+    const { userNotes, fetchAllNotes, editNote } = usernotestate;
 
     // Calling the fetchAllNotes() :
     useEffect(() => {
         fetchAllNotes()
-    },[]);
+    }, []);
+
+    // Adding the Things for Edit Form Fields
+    // Making a State to store the note until get submitted that WILL be written in the userNotes state & database later
+    const [tempNote,setTempNote] = useState({editTitle:"",editDescription:"",editTags:""})
+
+    // Function to handle Adding Note on clicking Submit Button
+    const handleEditNote = (event)=>{
+        
+        // This will prevent the page to get Reloaded (it is preventDefault not preventDefaults !)
+        event.preventDefault();
+
+        console.log("Editted Note : ",tempNote)
+
+        // Calling the function editNote from NoteState and update the data in the database as well using API
+        editNote(tempNote._id,tempNote.editTitle,tempNote.editDescription,tempNote.editTags)
+    }
+
+    // Function to handle when the data in the input will be changed
+    const onChange = (event)=>{
+
+        // Now, Getting the data that user will be adding and that will be saved on that spot when user add the data
+        setTempNote({
+            ...tempNote, // This will be the data that is already present
+            [event.target.name] : event.target.value
+            // Using the above line, it will ADD the data and OVERWRITE if already present
+            // Thus, when we write the title, then value of title will be the text that user will write
+        })
+    }
+
+    const updatenote = (currentNote) => {
+        console.log("Updating Note !!");
+
+        setTempNote({
+            ...currentNote,
+            editTitle : currentNote.title,
+            editDescription : currentNote.description,
+            editTags : currentNote.tags
+        })
+
+        // Now, we can use the ref here and show the modal by using the click() function ==> Refer the Docs on bootstrap Modal Theory
+        ref.current.click(); // Also Note that we have to use the current after the ref everytime !
+    }
+
+    // By Using useRef, we can give reference to any one element !
+    const ref = useRef(null);
 
     return (
         <>
             {/* Added the code that we have used in the Home.js */}
             <AddNote />
+
+            {/* Adding the Code for Edit Note Modal */}
+            {/* Button to trigger modal */}
+            {/* Making the button as reference and also hiding it*/}
+            <button type="button" ref={ref} className="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Launch demo modal
+            </button>
+
+            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">Edit Note </h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            {/* Adding the Form Fields to update the Note */}
+                            <form className='my-3' id='addNoteForm'>
+                                <div className="mb-3">
+                                    <label htmlFor="editTitle" className="form-label">Note Title</label>
+                                    <input type="text" className="form-control" name='editTitle' id="editTitle" onChange={onChange} defaultValue={tempNote.editTitle}/>
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="editDescription" className="form-label">Description</label>
+                                    <textarea rows="5" className="form-control" id="editDescription" name="editDescription" onChange={onChange} defaultValue={tempNote.editDescription} ></textarea>
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="editTags" className="form-label">Tags</label>
+                                    <input type="text" className="form-control" name="editTags" id="editTags" defaultValue={tempNote.editTags}/>
+                                </div>
+                            </form>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-primary" onClick={handleEditNote}>Edit Note</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <div className="container">
                 <h2>Your Notes</h2>
                 <div className='row'>
@@ -40,7 +126,7 @@ export default function Notes() {
                         {/* return note.title; */ }
                         {/*Adding the NoteItem Component Here & will pass the note data as props */ }
                         return (
-                            <NoteItem note={note} key={note._id} />
+                            <NoteItem note={note} key={note._id} updatenote={updatenote} />
                         );
                     })}
                 </div>

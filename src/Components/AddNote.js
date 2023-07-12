@@ -47,11 +47,15 @@ export default function AddNote() {
             <form className='my-3' id='addNoteForm'>
                 <div className="mb-3">
                     <label htmlFor="title" className="form-label">Note Title</label>
-                    <input type="text" className="form-control" name='title' id="title" onChange={onChange} aria-describedby="emailHelp" />
+                    <input type="text" className="form-control" name='title' id="title" onChange={onChange} />
                 </div>
                 <div className="mb-3">
                     <label htmlFor="description" className="form-label">Description</label>
                     <textarea rows="5" className="form-control" id="description" name="description" onChange={onChange} ></textarea>
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="tags" className="form-label">Tags</label>
+                    <input type="text" className="form-control" name='tags' id="tags" />
                 </div>
                 <button type="submit" className="btn btn-primary" onClick={handleAddNote}>Add Note</button>
             </form>

@@ -15,6 +15,7 @@ export default function NoteItem(props) {
 
     // Applying Destructing from the props
     const noteItem = props.note;
+    const updatenote = props.updatenote;
 
     // Removed the function that we have made earlier for edit and delete as we will be using the function from the context API
 
@@ -111,7 +112,7 @@ export default function NoteItem(props) {
                                 <i className="icons fa-solid fa-trash" style={{ "color": "#2f3434" }} onClick={() => deleteNote(noteItem._id)}></i>
                             </div>
                             <div className="p-2">
-                                <i className="icons fa-solid fa-marker" style={{ "color": "#2f3434" }} ></i>
+                                <i className="icons fa-solid fa-marker" style={{ "color": "#2f3434" }} onClick={() => updatenote(noteItem)}></i>
                             </div>
                         </div>
                     </h5>
