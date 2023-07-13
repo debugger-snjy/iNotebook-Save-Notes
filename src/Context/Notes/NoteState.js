@@ -83,7 +83,6 @@ const NoteState = (props) => {
             },
             
             body : JSON.stringify({title,description,tags})
-            // No need of body as we will not pass anything in the body
         });
         // parses JSON response into native JavaScript objects and using await as the function is asynchronus function
         const allNotesFromDb = await response.json();
@@ -112,26 +111,68 @@ const NoteState = (props) => {
     }
 
     // Function to Edit a Note
-    const editNote = (id, title, description, tags) => {
+    const editNote = async (id, title, description, tags) => {
 
-        // TODO : Make an API Call Here !
+        // ✅ Done TODO : Make an API Call Here !
         
-        for (let index = 0; index < userNotes.length; index++) {
-            const element = userNotes[index];
+        // Checking for the Values
+        // console.log(id);
+        // console.log(title);
+        // console.log(description);
+        // console.log(tags);
+        // console.log(JSON.stringify({title,description,tags}))
+
+        const response = await fetch(`${host}/api/notes/updatenote/${id}`,{
+            method: "PUT", // As editnote is a PUT method
+            
+            headers: {
+                "Content-Type": "application/json",
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+
+                // Adding the auth-token hardcore till now !
+                "auth-token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRhODVlNTI3YTU5MjUzMjkzMjVjN2Q5In0sImlhdCI6MTY4ODc1NTgzNn0.bn4dh8C4bDBzXC8e4yNhOaBlFMAkXDrgSyJ8gEKYrNU",
+            },
+            
+            body : JSON.stringify({title,description,tags})
+        })
+        const editedNote = await response.json()
+
+        console.log("Note is Edited !!");
+
+        // fetchAllNotes();  // ====> We can do that but, it will increase the api requests because for update note, we call api for 2 time get API + fetch API
+
+        // Copying the userNotes state variable and editing them
+        let newuserNotes = JSON.parse(JSON.stringify(userNotes))
+
+        for (let index = 0; index < newuserNotes.length; index++) {
+            const element = newuserNotes[index];
+            // console.log(element);
             // Finding the Note that we have to edit
             if (element._id === id) {
+                console.log("Editing");
                 // Editing title, description and tags
-                element.title = title;
-                element.description = description;
-                element.tags = tags;
+                // We cannot edit the state variable directly, we have to use the setuserNotes set state function
+                // userNotes[index].title = title;
+                // userNotes[index].description = description;
+                // userNotes[index].tags = tags;
+                newuserNotes[index].title = title;
+                newuserNotes[index].description = description;
+                newuserNotes[index].tags = tags;
+                
+                // Now, closing the Loops as we don't have any other note to edit
+                break
             }
         }
+
+        // console.log(newuserNotes); // Checking
+        // Now, setting the newuserNotes in the userNote State Variable
+        setuserNotes(newuserNotes)
     }
 
     // Function to Delete a Note
     const deleteNote = async (id) => {
 
-        // TODO : Make an API Call Here !
+        // ✅ Done TODO : Make an API Call Here !
         // Adding the API Call to delete the notes from the database
         const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
             method: "DELETE", // As fetchallnotes is a GET method
@@ -147,7 +188,7 @@ const NoteState = (props) => {
             // No need of body as we will not pass anything in the body
         });
         // parses JSON response into native JavaScript objects and using await as the function is asynchronus function
-        const allNotesFromDb = await response.json();
+        const deletedNote = await response.json();
 
         console.log("Deleting the note !!");
         // let usersWithoutTim = userNotes.filter(user => user.name !== "Tim");
