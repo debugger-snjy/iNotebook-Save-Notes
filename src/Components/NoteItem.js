@@ -22,41 +22,49 @@ export default function NoteItem(props) {
     // Function to format the Date that we got from database
     const formatteddatetime = (datetimeString) => {
 
-        // Removing the Z from the string
-        const datetime = datetimeString.split("Z")[0];
-
-        // Getting the Date from the datetime String and then dividing the hrs,min,sec,microsec into a array
-        const dateString = (datetime.split("T")[0]).split("-");
-
-        // Getting the Time from the datetime String
-        const timeString = datetime.split("T")[1];
-
-        // Array of all months
-        const months = ["Jan", "Feb", "Mar", "Apr", "MayJun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        // Creating a Date Object
+        const datetime = new Date(datetimeString);
+        
+        // Converting the Time into the Local Time Zone
+        datetime.toLocaleString('en-US', { timeZone: 'Asia/Calcutta' })
 
         // Getting the hrs from the time string
-        let hrs = timeString.split(":")[0];
+        let dateHrs = datetime.getHours()
 
         // Getting the min from the time string
-        let min = timeString.split(":")[1];
+        let dateMins = datetime.getMinutes()
+
+        const months = ["Jan", "Feb", "Mar", "Apr", "MayJun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
         // Finding the am pm notation from the string
         let ampm = "";
 
         // Converting the 24 hours into 12 hours and finding the ampm notation
-        if (hrs > 12) {
+        if (dateHrs > 12) {
             ampm = "PM";
-            hrs = hrs - 12;
+            dateHrs = dateHrs - 12;
+        }
+        else if (dateHrs === 12){
+            ampm = "PM";
         }
         else {
             ampm = "AM";
         }
 
+        // Adding zero in beginning of the single digit numbers
+        const addZero = (text) => {
+            console.log("text :", text);
+            if (text>=0 && text<=9){
+                return "0"+text
+            }
+            return text;
+        }
+
         // Formatting Time from hrs, min, and ampm notation
-        const noteTime = hrs + ":" + min + " " + ampm;
+        const noteTime = addZero(dateHrs) + ":" + addZero(dateMins) + " " + ampm;
 
         // Formatting Date from date,month and year
-        const noteDate = dateString[2] + " " + months[parseInt(dateString[1])] + " " + dateString[0];
+        const noteDate = addZero(datetime.getDate()) + " " + addZero(months[datetime.getMonth()-1]) + " " + datetime.getFullYear()
 
         // Checking
         // console.log(noteDate,noteTime);
