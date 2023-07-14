@@ -68,13 +68,13 @@ export default function Notes() {
             editDescription : currentNote.description,
             editTags : currentNote.tags
         })
-
+        
         // Now, we can use the ref here and show/Open the modal by using the click() function ==> Refer the Docs on bootstrap Modal Theory
         modalOpenRef.current.click(); // Also Note that we have to use the current after the ref everytime !
     }
-
-    // By Using useRef, we can give reference to any one element !
     
+    // By Using useRef, we can give reference to any one element !
+
     // We use this ref for showing/opening the modal
     const modalOpenRef = useRef(null);
 
@@ -105,21 +105,23 @@ export default function Notes() {
                             <form className='my-3' id='addNoteForm'>
                                 <div className="mb-3">
                                     <label htmlFor="editTitle" className="form-label">Note Title</label>
-                                    <input type="text" className="form-control" name='editTitle' id="editTitle" onChange={onChange} defaultValue={editedNote.editTitle}/>
+                                    {/* Added Minimum Length as 5 to Submit the Edit Form and also this field cann't be empty */}
+                                    <input type="text" className="form-control" name='editTitle' id="editTitle" minLength={5} required onChange={onChange} value={editedNote.editTitle} />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="editDescription" className="form-label">Description</label>
-                                    <textarea rows="5" className="form-control" id="editDescription" name="editDescription" onChange={onChange} defaultValue={editedNote.editDescription} ></textarea>
+                                    {/* Added Minimum Length as 5 to Submit the Edit Form and also this field cann't be empty */}
+                                    <textarea rows="5" className="form-control" id="editDescription" name="editDescription" minLength={5} required onChange={onChange} value={editedNote.editDescription} ></textarea>
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="editTags" className="form-label">Tags</label>
-                                    <input type="text" className="form-control" name="editTags" id="editTags" defaultValue={editedNote.editTags}/>
+                                    <input type="text" className="form-control" name="editTags" id="editTags" onChange={onChange} value={editedNote.editTags} />
                                 </div>
                             </form>
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" ref={modalCloseRef} data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary" onClick={handleEditNote}>Edit Note</button>
+                            <button type="button" className="btn btn-primary" onClick={handleEditNote} disabled={editedNote.editTitle.length < 5 || editedNote.editDescription.length < 5}>Edit Note</button>
                         </div>
                     </div>
                 </div>
@@ -129,6 +131,14 @@ export default function Notes() {
             <div className="container">
                 <h2>Your Notes</h2>
                 <div className='row'>
+
+                    <div className="container my-2">
+                        {/* If there are No Notes to display, then we will display the particular message */}
+                        <h5>
+                            {userNotes.length === 0 && "No Notes to Display, click on Add Note to add a Note"}
+                        </h5>
+                    </div>
+
                     {/* Getting the notes from the Context API */}
                     {/* Displaying the data individual from the Array */}
                     {userNotes.map((note) => {

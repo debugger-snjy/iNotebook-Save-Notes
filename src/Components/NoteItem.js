@@ -53,7 +53,7 @@ export default function NoteItem(props) {
 
         // Adding zero in beginning of the single digit numbers
         const addZero = (text) => {
-            console.log("text :", text);
+            // console.log("text :", text);
             if (text>=0 && text<=9){
                 return "0"+text
             }

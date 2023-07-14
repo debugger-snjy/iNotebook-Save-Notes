@@ -79,7 +79,7 @@ router.post('/addnote', fetchUser, [
 router.put('/updatenote/:id', fetchUser, [
     body("title", "Title can't be Empty !").notEmpty(),
     body("description", "Description can't be Empty !").notEmpty(),
-    body("description", "Description should have minimum of 10 Letters !").isLength({ min: 10 })
+    body("description", "Description should have minimum of 5 Letters !").isLength({ min: 5 })
 ], async (req, res) => {
 
     try {

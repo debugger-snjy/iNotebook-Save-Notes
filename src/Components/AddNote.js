@@ -27,6 +27,16 @@ export default function AddNote() {
 
         // Reseting the Form
         document.getElementById("addNoteForm").reset()
+
+        // TODO : A Big Loop Hole Solved
+        // IMP : This will clear the tempNote and also will disable the Add Note
+        // If not included the Add Note Button will be Enabled and if user clicks on that button wiht empty fields
+        // It will save the note with the previous details again and again
+        setTempNote({
+            title:"",
+            description:"",
+            tags:""
+        })
     }
 
     // Function to handle when the data in the input will be changed
@@ -47,17 +57,20 @@ export default function AddNote() {
             <form className='my-3' id='addNoteForm'>
                 <div className="mb-3">
                     <label htmlFor="title" className="form-label">Note Title</label>
-                    <input type="text" className="form-control" name='title' id="title" onChange={onChange} />
+                    {/* Added Minimum Length as 5 to Submit the Form and also this field cann't be empty */}
+                    <input type="text" className="form-control" name='title' id="title" onChange={onChange} minLength={5} required/>
                 </div>
                 <div className="mb-3">
                     <label htmlFor="description" className="form-label">Description</label>
-                    <textarea rows="5" className="form-control" id="description" name="description" onChange={onChange} ></textarea>
+                    {/* Added Minimum Length as 5 to Submit the Form and also this field cann't be empty */}
+                    <textarea rows="5" className="form-control" id="description" name="description" onChange={onChange} minLength={5} required></textarea>
                 </div>
                 <div className="mb-3">
                     <label htmlFor="tags" className="form-label">Tags</label>
                     <input type="text" className="form-control" name='tags' id="tags" />
                 </div>
-                <button type="submit" className="btn btn-primary" onClick={handleAddNote}>Add Note</button>
+                {/* We will disable the Button if the title and description are having length less than 5 */}
+                <button type="submit" className="btn btn-primary" onClick={handleAddNote} disabled={ tempNote.title.length<5 || tempNote.description.length<5 }>Add Note</button>
             </form>
             <hr />
 
