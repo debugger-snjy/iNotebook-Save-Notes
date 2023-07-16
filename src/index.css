@@ -16,6 +16,7 @@ body {
   background-image: url("Images/background.png");
   background-size: cover;
   background-repeat: no-repeat;
+  opacity: 1;
 }
 
 .websiteHeading {
@@ -45,7 +46,6 @@ body {
   margin: 10px 0px;
   border: 2px solid black;
   box-shadow: 0px 5px 0px 0px black;
-
   transform: scale(1.025);
 }
 
@@ -57,9 +57,24 @@ body {
   margin-bottom: 100px;
 }
 
-.noteField {
+.noteField-signup,.noteField-note {
   border: 2px solid black;
   box-shadow: 0px 5px 0px 0px black;
+}
+
+.noteField-signup:focus,.noteField-note:focus {
+  border: 2px solid black;
+  box-shadow: 0px 5px 0px 0px black;
+}
+
+.noteField-login {
+  border: 2px solid white;
+  box-shadow: 0px 5px 0px 0px #72a3eb;
+}
+
+.noteField-login:focus {
+  border: 2px solid white;
+  box-shadow: 0px 5px 0px 0px #72a3eb;
 }
 
 .addNoteBtn {
@@ -67,4 +82,10 @@ body {
   width: 40%;
   height: 50px;
   opacity: 1;
+}
+
+.signupBtn {
+  height: 50px;
+  width: 50%;
+  margin-top: 30px;
 }

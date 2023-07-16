@@ -86,12 +86,12 @@ function Login() {
                                 <form onSubmit={handleLogin}>
                                     <div className="mb-3">
                                         {/* <label for="userEmail" className="form-label">Email Address</label> */}
-                                        <input type="email" className="form-control" id="userEmail" placeholder="Email Id" />
+                                        <input type="email" className="form-control noteField-login" id="userEmail" placeholder="Email Id" />
                                     </div>
                                     <div className="mb-3">
                                         {/* <label for="userPassword" className="form-label">Password</label> */}
-                                        <input type="password" className="form-control" id="userPassword" placeholder='Password' />
-                                        <div style={{ "textAlign": "right" }}><Link to="/">Forget Password ?</Link></div>
+                                        <input type="password" className="form-control noteField-login" id="userPassword" placeholder='Password' />
+                                        <div style={{ "textAlign": "right", marginTop : "10px" }}><Link to="/">Forget Password ?</Link></div>
                                     </div>
                                     <div className="mb-3">
                                         <button type="submit" className="btn btn-primary container">Log in</button>
@@ -99,7 +99,7 @@ function Login() {
                                 </form>
                                 <hr />
                                 <div className="mb-3">
-                                    <div className='text-center text-white'>New to iNotebook, <Link to='/signup'>create Account</Link></div>
+                                    <div className='text-center text-white'>New to iNotebook, <Link to='/signup'>Create Account</Link></div>
                                 </div>
                             </div>
                         </div>

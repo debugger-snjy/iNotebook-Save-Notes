@@ -133,7 +133,7 @@ router.post('/createuser', [
         msg = "Sign Up Successfully"
 
         // return res.json(userData)
-        return res.json({ authToken })
+        return res.json({ authToken,status: status, msg: msg })
         // {authToken} is same as {"authToken" : authToken}
 
         // removing the then and catch as we have remove the promise

@@ -58,16 +58,16 @@ export default function AddNote() {
                 <div className="mb-3">
                     <label htmlFor="title" className="form-label">Note Title</label>
                     {/* Added Minimum Length as 5 to Submit the Form and also this field cann't be empty */}
-                    <input type="text" className="form-control noteField" name='title' id="title" onChange={onChange} minLength={5} required />
+                    <input type="text" className="form-control noteField-note" name='title' id="title" onChange={onChange} minLength={5} required />
                 </div>
                 <div className="mb-3">
                     <label htmlFor="description" className="form-label">Description</label>
                     {/* Added Minimum Length as 5 to Submit the Form and also this field cann't be empty */}
-                    <textarea rows="5" className="form-control noteField" id="description" name="description" onChange={onChange} minLength={5} required></textarea>
+                    <textarea rows="5" className="form-control noteField-note" id="description" name="description" onChange={onChange} minLength={5} required></textarea>
                 </div>
                 <div className="mb-3">
                     <label htmlFor="tags" className="form-label">Tags</label>
-                    <input type="text" className="form-control noteField" name='tags' id="tags" />
+                    <input type="text" className="form-control noteField-note" name='tags' id="tags" />
                 </div>
 
                 <div className="d-flex" style={{justifyContent : "center"}}>
