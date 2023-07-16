@@ -9,6 +9,8 @@ import About from './Components/About';
 // Importing NoteState 
 import NoteState from './Context/Notes/NoteState';
 import Alert from './Components/Alert';
+import Login from './Components/Login';
+import Signup from './Components/Signup';
 
 function App() {
     return (
@@ -28,8 +30,10 @@ function App() {
 
                     {/* Adding and Setting the Routers */}
                     <Routes>
-                        <Route exact path='/' element={<Home />} />
+                        <Route exact path='/' element={<Login />} />
                         <Route exact path='/about' element={<About />} />
+                        <Route exact path='/addnote' element={<Home />} />
+                        <Route exact path='/signup' element={<Signup />} />
                     </Routes>
 
                 </div>

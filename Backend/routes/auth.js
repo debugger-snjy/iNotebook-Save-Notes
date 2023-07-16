@@ -22,7 +22,7 @@ const dotenv = require('dotenv');
 // dotenv.config(); ----> This will not work if Both Backend and Frontend are in same folder
 // Because, it will search for the .env file outside the folder i.e, root (Here, inotebook)
 // So, to specify from where to load the .env file, we will define the path in the config
-dotenv.config({path : "./Backend/.env"});
+dotenv.config({ path: "./Backend/.env" });
 // The default path is "/.env"
 
 // Importing the Middleware File :
@@ -54,13 +54,22 @@ router.post('/createuser', [
 
     console.log("Here, you will get authenticate here")
 
+    // Making a Variable to track the success or not
+    let status = "failed";
+    let msg = "";
+
     // Getting the Results after validations
     const errors = validationResult(req);
 
     // If we have errors, sending bad request with errors
     if (!errors.isEmpty()) {
+
+        // Setting up the parameters
+        status = "failed";
+        msg = "Sign Up failed"
+
         // sending the errors that are present
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(400).json({ errors: errors.array(), status: status, msg: msg });
     }
 
     // Here, We have to change the code as we have to verify the duplicate email in the database
@@ -69,6 +78,11 @@ router.post('/createuser', [
         // we have to add await as it is a promise and we have to wait till it gets resolves
         let user = await User.findOne({ email: req.body.email })
         if (user) {
+
+            // Setting up the parameters
+            status = "failed";
+            msg = "Account Already Exists"
+
             return res.status(400).json({ error: "Account already exists with this Email ID" })
         }
         // After Validating :
@@ -114,6 +128,10 @@ router.post('/createuser', [
         // Verifying the JWT Token but it will be needed in another endpoint like login endpoint
         // console.log(jwt.verify(authToken,JWT_SECRET))
 
+        // Setting up the parameters
+        status = "success";
+        msg = "Sign Up Successfully"
+
         // return res.json(userData)
         return res.json({ authToken })
         // {authToken} is same as {"authToken" : authToken}
@@ -129,6 +147,11 @@ router.post('/createuser', [
         //     res.json({error : "Account already exists with this Email ID.", description : err.message})
         // })
     } catch (error) {
+
+        // Setting up the parameters
+        status = "failed";
+        msg = "Sign Up failed"
+
         console.log("Error Occured !")
         console.error("Error : ", error.message)
         return res.status(500).json({ error: "Internal Server Error !", description: error.message })
@@ -149,13 +172,22 @@ router.post('/login', [
 
     console.log("Here, you will have to login here !")
 
+    // Making a Variable to track the success or not
+    let status = "failed";
+    let msg = "";
+
     // Getting the Results after validations
     const errors = validationResult(req);
 
     // If we have errors, sending bad request with errors
     if (!errors.isEmpty()) {
+
+        // Setting up the parameters
+        status = "failed";
+        msg = "Login Failed"
+
         // sending the errors that are present
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(400).json({ status: status, msg: msg, errors: errors.array() });
     }
 
     // Getting the Email and password :
@@ -168,8 +200,13 @@ router.post('/login', [
 
         // If no record found in the database
         if (!userWithEmail) {
+
+            // Setting up the parameters
+            status = "failed";
+            msg = "Account Doesn't Exists"
+
             console.log("No Email Found !");
-            return res.status(404).json({ error: "Please try to login with correct credentials !" })
+            return res.status(404).json({ status: status, msg: msg, error: "Please try to login with correct credentials !" })
         }
 
         // If the code is here that means, user with the given email exists
@@ -179,8 +216,13 @@ router.post('/login', [
 
         // if password doesn't matches
         if (!comparePassword) {
+
+            // Setting up the parameters
+            status = "failed";
+            msg = "Incorrect Password"
+
             console.log("No Password Found !");
-            return res.status(404).json({ error: "Please try to login with correct credentials !" })
+            return res.status(404).json({ status: status, msg: msg, error: "Please try to login with correct credentials !" })
         }
 
         // if password is also same, then returning the authtoken
@@ -194,12 +236,18 @@ router.post('/login', [
         const authToken = jwt.sign(userID_Data, JWT_SECRET);
 
         // return res.json(userData)
-        return res.json({ authToken })
+        // Setting up the parameters
+        status = "success";
+        msg = "Login Successful"
+        return res.json({ status: status, msg: msg, authToken })
 
     } catch (error) {
         console.log("Error Occured !")
         console.error("Error : ", error.message)
-        return res.status(500).json({ error: "Internal Server Error !", description: error.message })
+        // Setting up the parameters
+        status = "failed";
+        msg = "Login Failed"
+        return res.status(500).json({ status: status, msg: msg, error: "Internal Server Error !", description: error.message })
     }
 
 });
@@ -210,12 +258,16 @@ router.post('/login', [
 
 // router.post('/getuser', async (req, res) => {
 // Adding the middleware
-router.post('/getuser', fetchUser , async (req, res) => {
+router.post('/getuser', fetchUser, async (req, res) => {
 
     // To Start the code, first of all we have to check whether the user is logged in or not
     // After it is logged in, we will pass the authToken in the header and from the token we will get the id
     // If we write code here, then every time when we used the authentication, we have to paste code everytime
     // So, to make it easier we will use the middleware and that can be used anywhere
+
+    // Making a Variable to track the success or not
+    let status = "failed";
+    let msg = "";
 
     try {
 
@@ -228,12 +280,18 @@ router.post('/getuser', fetchUser , async (req, res) => {
         // For not getting password, select("-password")
         const user = await User.findById(userId).select("-password");
 
-        return res.json(user);
+        // Setting up the parameters
+        status = "success";
+        msg = "User Fetch Successful"
+        return res.json({ status: status, msg: msg, user});
     }
     catch (error) {
         console.log("Error Occured !")
         console.error("Error : ", error.message)
-        return res.status(500).json({ error: "Internal Server Error !", description: error.message })
+        // Setting up the parameters
+        status = "failed";
+        msg = "User Fetch Failed"
+        return res.status(500).json({ status: status, msg: msg, error: "Internal Server Error !", description: error.message })
     }
 
 });

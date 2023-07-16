@@ -85,14 +85,19 @@ const NoteState = (props) => {
             body : JSON.stringify({title,description,tags})
         });
         // parses JSON response into native JavaScript objects and using await as the function is asynchronus function
-        const allNotesFromDb = await response.json();
+        const addNoteResponse = await response.json();
         
         // Checking
-        console.log("New Note : ",allNotesFromDb);
+        console.log("New Note : ",addNoteResponse);
 
         // Now, adding all the notes in the userNotes state variable and will display all the notes from database !
-        setuserNotes(userNotes.concat(allNotesFromDb))
-        
+        // This change is because we have added the msg and status field in the note response
+        setuserNotes(userNotes.concat(addNoteResponse.savedNote))
+
+        console.log(userNotes);
+
+        // fetchAllNotes()
+
         // Checking
         // console.log("Adding a new Note");
 

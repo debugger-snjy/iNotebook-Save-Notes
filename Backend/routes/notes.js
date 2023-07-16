@@ -19,6 +19,10 @@ const fetchUser = require("../middleware/fetchUserId")
 // Here, Login is Required ==> Middleware needed
 router.get('/fetchallnotes', fetchUser, async (req, res) => {
 
+    // Making a Variable to track the success or not
+    let status = "";
+    let msg = "";
+
     try {
         // Finding all the notes 
         // Also to be specific, we have to add the user in the parameter to find notes of only that user
@@ -27,7 +31,7 @@ router.get('/fetchallnotes', fetchUser, async (req, res) => {
     } catch (error) {
         console.log("Error Occured !")
         console.error("Error : ", error.message)
-        return res.status(500).json({ error: "Internal Server Error !", description: error.message })
+        return res.status(500).json({ status: status, msg: msg, error: "Internal Server Error !", description: error.message })
     }
 })
 
@@ -39,6 +43,10 @@ router.post('/addnote', fetchUser, [
     body("description", "Description can't be Empty !").isLength({ min: 5 })
 ], async (req, res) => {
 
+    // Making a Variable to track the success or not
+    let status = "";
+    let msg = "";
+
     try {
         console.log("Here, You can Add Note Here !")
 
@@ -47,8 +55,13 @@ router.post('/addnote', fetchUser, [
 
         // If we have errors, sending bad request with errors
         if (!errors.isEmpty()) {
+
+            // Setting up the parameters
+            status = "failed";
+            msg = "Note Not Added Successfully"
+
             // sending the errors that are present
-            return res.status(400).json({ errors: errors.array() });
+            return res.status(400).json({ status: status, msg: msg, errors: errors.array() });
         }
 
         // If no errors are present or found
@@ -62,13 +75,21 @@ router.post('/addnote', fetchUser, [
         // Saving note in database
         const savedNote = await note.save();
 
+        // Setting up the parameters
+        status = "success";
+        msg = "Note Added Successfully"
+
         // returning the saved note Details
-        return res.status(200).json(savedNote)
+        return res.status(200).json({ status: status, msg: msg, savedNote })
     }
     catch (error) {
         console.log("Error Occured !")
         console.error("Error : ", error.message)
-        return res.status(500).json({ error: "Internal Server Error !", description: error.message })
+
+        // Setting up the parameters
+        status = "failed";
+        msg = "Note Not Added Successfully"
+        return res.status(500).json({ status: status, msg: msg, error: "Internal Server Error !", description: error.message })
     }
 
 })
@@ -82,14 +103,23 @@ router.put('/updatenote/:id', fetchUser, [
     body("description", "Description should have minimum of 5 Letters !").isLength({ min: 5 })
 ], async (req, res) => {
 
+    // Making a Variable to track the success or not
+    let status = "";
+    let msg = "";
+
     try {
         // Getting the Results after validations
         const errors = validationResult(req);
 
         // If we have errors, sending bad request with errors
         if (!errors.isEmpty()) {
+
+            // Setting up the parameters
+            status = "failed";
+            msg = "Note Not Updated Successfully"
+
             // sending the errors that are present
-            return res.status(400).json({ errors: errors.array() });
+            return res.status(400).json({ status: status, msg: msg, errors: errors.array() });
         }
 
         // If no errors are present or found
@@ -111,8 +141,13 @@ router.put('/updatenote/:id', fetchUser, [
 
         // If that note doesn't exists, then returning the Bad Response
         if (!note) {
-            // return res.status(404).json({error : "Note Not Found !"})
-            return res.status(404).send("Note Not Found !");
+
+            // Setting up the parameters
+            status = "failed";
+            msg = "Note Not Updated Successfully"
+
+            // return res.status(404).json({ status: status, msg: msg, error : "Note Not Found !"})
+            return res.status(404).json({ status: status, msg: msg, error: "Note Not Found !" });
         }
 
         // If note exists in database, then getting its user
@@ -121,19 +156,32 @@ router.put('/updatenote/:id', fetchUser, [
         if (note.user.toString() !== req.user.id) {
             // the note don't belong to that user and should not have any right ot update
             // 401 - Unauthorized
-            // return res.status(401).json({error : "Access Denied !"})
-            return res.status(404).send("Access Denied !");
+
+            // Setting up the parameters
+            status = "failed";
+            msg = "Note Not Updated Successfully"
+
+            // return res.status(401).json({ status: status, msg: msg, error : "Access Denied !"})
+            return res.status(404).json({ status: status, msg: msg, error: "Access Denied !" });
 
         }
 
         // If code is reached here, that's means the note is belong to the user which is logged in and also that note exists
         const updatedNote = await Notes.findByIdAndUpdate(req.params.id, { $set: newNote }, { new: true });
-        return res.send(updatedNote);
+        // Setting up the parameters
+        status = "success";
+        msg = "Note Updated Successfully"
+        return res.json({ status: status, msg: msg, updatedNote });
     }
     catch (error) {
         console.log("Error Occured !")
         console.error("Error : ", error.message)
-        return res.status(500).json({ error: "Internal Server Error !", description: error.message })
+
+        // Setting up the parameters
+        status = "failed";
+        msg = "Note Not Updated Successfully"
+
+        return res.status(500).json({ status: status, msg: msg, error: "Internal Server Error !", description: error.message })
     }
 })
 
@@ -141,6 +189,10 @@ router.put('/updatenote/:id', fetchUser, [
 // Here, Login is Required ==> Middleware needed
 // Also, the user could delete his/her note only so for that we have to check for the user as well
 router.delete('/deletenote/:id', fetchUser, async (req, res) => {
+
+    // Making a Variable to track the success or not
+    let status = "";
+    let msg = "";
 
     try {// Finding whether the same user who created note is deleting or not
 
@@ -151,8 +203,13 @@ router.delete('/deletenote/:id', fetchUser, async (req, res) => {
 
         // If that note doesn't exists, then returning the Bad Response
         if (!note) {
-            // return res.status(404).json({error : "Note Not Found !"})
-            return res.status(404).send("Note Not Found !");
+
+            // Setting up the parameters
+            status = "failed";
+            msg = "Note Not Deleted Successfully"
+
+            return res.status(404).json({ status: status, msg: msg, error : "Note Not Found !"})
+            // return res.status(404).json("Note Not Found !");
         }
 
         // If note exists in database, then getting its user
@@ -161,19 +218,34 @@ router.delete('/deletenote/:id', fetchUser, async (req, res) => {
         if (note.user.toString() !== req.user.id) {
             // the note don't belong to that user and should not have any right ot update
             // 401 - Unauthorized
-            // return res.status(401).json({error : "Access Denied !"})
-            return res.status(404).send("Access Denied !");
+
+            // Setting up the parameters
+            status = "failed";
+            msg = "Note Not Deleted Successfully"
+
+            return res.status(401).json({ status: status, msg: msg, error : "Access Denied !"})
+            // return res.status(404).json("Access Denied !");
 
         }
 
         // If code is reached here, that's means the note is belong to the user which is logged in and also that note exists
         const deletedNote = await Notes.findByIdAndDelete(req.params.id);
-        return res.send({ "Success": "Note has been Deleted !", note: deletedNote });
+
+        // Setting up the parameters
+        status = "success";
+        msg = "Note Deleted Successfully"
+
+        return res.json({ status: status, msg: msg, "Success": "Note has been Deleted !", note: deletedNote });
     }
     catch (error) {
         console.log("Error Occured !")
         console.error("Error : ", error.message)
-        return res.status(500).json({ error: "Internal Server Error !", description: error.message })
+
+        // Setting up the parameters
+        status = "failed";
+        msg = "Note Not Deleted Successfully"
+
+        return res.status(500).json({ status: status, msg: msg, error: "Internal Server Error !", description: error.message })
     }
 })
 

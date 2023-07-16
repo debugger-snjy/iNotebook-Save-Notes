@@ -114,7 +114,7 @@ export default function NoteItem(props) {
                 <div className="card-body">
                     <h5 className="card-title">
                         <div className="d-flex">
-                            <div className="p-2 flex-grow-1">{noteItem.title}</div>
+                            <div className="p-2 flex-grow-1"><strong>{noteItem.title}</strong></div>
                             <div className="p-2">
                                 {/* Deleting note using the function deleteNote() from the Context API */}
                                 <i className="icons fa-solid fa-trash" style={{ "color": "#2f3434" }} onClick={() => deleteNote(noteItem._id)}></i>

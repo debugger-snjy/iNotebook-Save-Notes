@@ -142,8 +142,8 @@ export default function Notes() {
                     {/* Getting the notes from the Context API */}
                     {/* Displaying the data individual from the Array */}
                     {userNotes.map((note) => {
-                        {/* return note.title; */ }
                         {/*Adding the NoteItem Component Here & will pass the note data as props */ }
+                        {/* console.log(note._id) /// Checking */}
                         return (
                             <NoteItem note={note} key={note._id} updatenote={updatenote} />
                         );
