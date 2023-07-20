@@ -81,9 +81,9 @@ router.post('/createuser', [
 
             // Setting up the parameters
             status = "failed";
-            msg = "Account Already Exists"
+            msg = "Account already exists with this Email ID"
 
-            return res.status(400).json({ error: "Account already exists with this Email ID" })
+            return res.status(400).json({ status, msg: msg })
         }
         // After Validating :
         // Creating the User if not exists and it will be saved in the Database
@@ -154,7 +154,7 @@ router.post('/createuser', [
 
         console.log("Error Occured !")
         console.error("Error : ", error.message)
-        return res.status(500).json({ error: "Internal Server Error !", description: error.message })
+        return res.status(500).json({ error: "Internal Server Error !", description: error.message, status, msg: msg })
     }
 
 })

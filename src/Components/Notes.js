@@ -9,70 +9,100 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import NoteContext from '../Context/Notes/NoteContext';
 import NoteItem from './NoteItem';
 import AddNote from './AddNote';
+import { useNavigate } from 'react-router-dom';
 
 export default function Notes() {
 
     // Using the function to get the data from the context
-    const usernotestate = useContext(NoteContext);
-    // console.log(usernotestate);
+    const contextData = useContext(NoteContext);
+    // console.log(contextData);
 
     // Destructuring Data
     // Removing updateNotes ==> as we have only to display notes right now
     // REMOVED and Transfered to <AddNote /> Component : Adding addNote => Using this we can add the notes in the userNotes state variable --> NO need of this as we have a component of it
     // Adding fetchAllNotes will fetch all the notes from the database !
-    const { userNotes, fetchAllNotes, editNote } = usernotestate;
+    const { userNotes, fetchAllNotes, editNote } = contextData;
+
+    // Navigator
+    let navigateTo = useNavigate()
 
     // Calling the fetchAllNotes() :
     useEffect(() => {
-        fetchAllNotes()
+
+        console.log(localStorage.getItem("token"));
+        if (localStorage.getItem("token")) {
+            fetchAllNotes()
+            console.log("Fetching");
+        }
+        else {
+            navigateTo("/errorpage")
+        }
+
     }, []);
 
     // Adding the Things for Edit Form Fields
     // Making a State to store the note until get submitted that WILL be written in the userNotes state & database later
-    const [editedNote,setEditedNote] = useState({id:"", editTitle:"",editDescription:"",editTags:""})
+    const [editedNote, setEditedNote] = useState({ id: "", editTitle: "", editDescription: "", editTags: "" })
 
     // Function to handle Adding Note on clicking Submit Button
-    const handleEditNote = (event)=>{
-        
+    const handleEditNote = async (event) => {
+
         // This will prevent the page to get Reloaded (it is preventDefault not preventDefaults !)
         event.preventDefault();
 
-        console.log("Edited Note : ",editedNote)
+        console.log("Edited Note : ", editedNote)
 
         // Calling the function editNote from NoteState and update the data in the database as well using API
-        editNote(editedNote.id,editedNote.editTitle,editedNote.editDescription,editedNote.editTags)
+        const responseData = await editNote(editedNote.id, editedNote.editTitle, editedNote.editDescription, editedNote.editTags)
 
         // When the User clicks on Edit Note Button and after editing the note in database we want to close the modal
         // So for that, we will use close button by using the ref=modalCloseRef
         modalCloseRef.current.click(); //=> Closes the modal
+
+        // Showing the Alert Message
+        if (responseData.status === "success") {
+            contextData.showAlert("Success", responseData.msg, "alert-success")
+        }
+        else {
+            contextData.showAlert("Error", responseData.msg, "alert-danger")
+        }
     }
 
     // Function to handle when the data in the input will be changed
-    const onChange = (event)=>{
+    const onChange = (event) => {
 
         // Now, Getting the data that user will be adding and that will be saved on that spot when user add the data
         setEditedNote({
             ...editedNote, // This will be the data that is already present
-            [event.target.name] : event.target.value
+            [event.target.name]: event.target.value
             // Using the above line, it will ADD the data and OVERWRITE if already present
             // Thus, when we write the title, then value of title will be the text that user will write
         })
+
     }
 
     const updatenote = (currentNote) => {
-        console.log("Updating Note !!");
-
-        setEditedNote({
-            id : currentNote._id,
-            editTitle : currentNote.title,
-            editDescription : currentNote.description,
-            editTags : currentNote.tags
-        })
+        console.log("Updating Note !!",currentNote);
         
+        setEditedNote({
+            id: currentNote._id,
+            editTitle: currentNote.title,
+            editDescription: currentNote.description,
+            editTags: currentNote.tags
+        })
+
         // Now, we can use the ref here and show/Open the modal by using the click() function ==> Refer the Docs on bootstrap Modal Theory
         modalOpenRef.current.click(); // Also Note that we have to use the current after the ref everytime !
+
+        // Showing Alert Message :
+        if (editedNote) {
+            contextData.showAlert("Info", "Opening Edit Form . . ", "alert-info")
+        }
+        else {
+            contextData.showAlert("Error", "Edit Form Cannot be Openend . . ", "alert-info")
+        }
     }
-    
+
     // By Using useRef, we can give reference to any one element !
 
     // We use this ref for showing/opening the modal
@@ -94,7 +124,7 @@ export default function Notes() {
             </button>
 
             <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div className="modal-dialog modal-lg">
+                <div className="modal-dialog modal-dialog-centered modal-lg">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h1 className="modal-title fs-5" id="exampleModalLabel">Edit Note </h1>
@@ -143,7 +173,7 @@ export default function Notes() {
                     {/* Displaying the data individual from the Array */}
                     {userNotes.map((note) => {
                         {/*Adding the NoteItem Component Here & will pass the note data as props */ }
-                        {/* console.log(note._id) /// Checking */}
+                        {/* console.log(note._id) /// Checking */ }
                         return (
                             <NoteItem note={note} key={note._id} updatenote={updatenote} />
                         );

@@ -123,13 +123,13 @@ router.put('/updatenote/:id', fetchUser, [
         }
 
         // If no errors are present or found
-        const { title, description, tag } = req.body;
+        const { title, description, tags } = req.body;
 
         // Create a newNote Object with the new Updated Data 
         const newNote = {
             title: title,
             description: description,
-            tag: tag
+            tags: tags
         }
 
         // Finding whether the same user who created note is updating or not
@@ -233,9 +233,9 @@ router.delete('/deletenote/:id', fetchUser, async (req, res) => {
 
         // Setting up the parameters
         status = "success";
-        msg = "Note Deleted Successfully"
+        msg = "Note has been Deleted Successfully"
 
-        return res.json({ status: status, msg: msg, "Success": "Note has been Deleted !", note: deletedNote });
+        return res.json({ status: status, msg: msg, note: deletedNote });
     }
     catch (error) {
         console.log("Error Occured !")

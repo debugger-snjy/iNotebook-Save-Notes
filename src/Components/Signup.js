@@ -1,9 +1,15 @@
-import React, { useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
+import NoteContext from '../Context/Notes/NoteContext';
+
 
 export default function Signup() {
 
     let navigateTo = useNavigate()
+
+    // Using the function to get the data from the context
+    const contextData = useContext(NoteContext);
+    console.log(contextData.alert);
 
     // Using State for the credintials
     const [credentials, setcredentials] = useState({
@@ -25,7 +31,7 @@ export default function Signup() {
             [event.target.name]: event.target.value
         })
         console.log(credentials);
-        
+
         console.log(passwordRef.current.value);
         console.log(confirmPasswordRef.current.value);
 
@@ -37,8 +43,12 @@ export default function Signup() {
             setcredentials({ ...credentials, confirmpassword: confirmPasswordRef.current.value })
             console.log("Unmatched", "confirmpassword : ", confirmPasswordRef.current.value, "password : ", passwordRef.current.value);
             console.log(credentials);
+
+            // Showing the Alert Message
+            contextData.showAlert("Warning", "Password and Confirm Password Doesn't matched", "alert-warning")
+
         }
-        else if(confirmPasswordRef.current.value === passwordRef.current.value){
+        else if (confirmPasswordRef.current.value === passwordRef.current.value) {
             // credentials.valid = true ====> We cannot update the value like this
 
             setTimeout(() => {
@@ -52,6 +62,9 @@ export default function Signup() {
             setcredentials({ ...credentials, confirmpassword: confirmPasswordRef.current.value })
             console.log("Matched", "confirmpassword : ", confirmPasswordRef.current.value, "password : ", passwordRef.current.value);
             console.log(credentials);
+
+            // Showing the Alert Message
+            contextData.showAlert("Warning", "Password and Confirm Password Matched", "alert-success")
         }
     }
 
@@ -97,10 +110,13 @@ export default function Signup() {
                 // Saving auth-token in localstorage
                 localStorage.setItem("token", userToken.authToken)
 
+                // Showing the Alert Message
+                contextData.showAlert("Success", userToken.msg, "alert-success")
+
                 // Setting the status message :
-                document.getElementById("status").innerText = userToken.msg
-                document.getElementById("status").style.color = "green"
-                document.getElementById("status").style.fontWeight = 600;
+                // document.getElementById("status").innerText = userToken.msg
+                // document.getElementById("status").style.color = "green"
+                // document.getElementById("status").style.fontWeight = 600;
 
                 setTimeout(() => {
                     // Also redirecting it to the Home Page(Add Note Page)
@@ -111,17 +127,23 @@ export default function Signup() {
 
             }
             else {
+
+                // Showing the Alert Message
+                contextData.showAlert("Failed", userToken.msg, "alert-danger")
+
                 // Setting the status message :
-                document.getElementById("status").innerText = userToken.msg
-                document.getElementById("status").style.color = "red"
-                document.getElementById("status").style.fontWeight = 600;
+                // document.getElementById("status").innerText = userToken.msg
+                // document.getElementById("status").style.color = "red"
+                // document.getElementById("status").style.fontWeight = 600;
             }
 
         }
         else {
-            document.getElementById("status").innerText = "Please Check the Fields"
-            document.getElementById("status").style.color = "red"
-            document.getElementById("status").style.fontWeight = 600;
+            // Showing the Alert Message
+            contextData.showAlert("Error", "Fields are Invalid or Empty", "alert-danger")
+            // document.getElementById("status").innerText = "Fields are Invalid or Empty"
+            // document.getElementById("status").style.color = "red"
+            // document.getElementById("status").style.fontWeight = 600;
         }
     }
 

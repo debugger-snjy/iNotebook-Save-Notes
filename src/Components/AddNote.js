@@ -1,19 +1,31 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import NoteContext from '../Context/Notes/NoteContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function AddNote() {
 
-    const NoteContextData = useContext(NoteContext);
-    // console.log(NoteContextData);
+    const contextData = useContext(NoteContext);
+    // console.log(contextData);
     // Destructuring Data
     // Here we only need a addNote function
-    const { addNote } = NoteContextData;
+    const { addNote } = contextData;
 
     // Making a State to store the note until get submitted that WILL be written in the userNotes state & database later
     const [tempNote, setTempNote] = useState({ title: "", description: "", tags: "" })
 
+    // Navigator
+    const navigateTo = useNavigate()
+
+    // Changing the Page when user clicks logout button
+    useEffect(()=>{
+        console.log(localStorage.getItem("token"));
+        if (!localStorage.getItem("token")) {
+            navigateTo("/")
+        }
+    },[])
+
     // Function to handle Adding Note on clicking Submit Button
-    const handleAddNote = (event) => {
+    const handleAddNote = async (event) => {
 
         // This will prevent the page to get Reloaded (it is preventDefault not preventDefaults !)
         event.preventDefault();
@@ -22,11 +34,12 @@ export default function AddNote() {
         // tempNote ==> will convert into permanent note
 
         // Both ways are correct
-        // addNote({tempNote});
-        addNote(tempNote.title, tempNote.description, tempNote.tags);
+        console.log({tempNote});
+        const responseData = await addNote(tempNote.title, tempNote.description, tempNote.tags);
 
         // Reseting the Form
         document.getElementById("addNoteForm").reset()
+        console.log(responseData);
 
         // TODO : A Big Loop Hole Solved
         // IMP : This will clear the tempNote and also will disable the Add Note
@@ -37,7 +50,16 @@ export default function AddNote() {
             description: "",
             tags: ""
         })
+
+        // Showing the Alert Message
+        if (responseData.status === "success") {
+            contextData.showAlert("Success", responseData.msg, "alert-success")
+        }
+        else {
+            contextData.showAlert("Error", responseData.msg, "alert-danger")
+        }
     }
+
 
     // Function to handle when the data in the input will be changed
     const onChange = (event) => {
@@ -67,10 +89,11 @@ export default function AddNote() {
                 </div>
                 <div className="mb-3">
                     <label htmlFor="tags" className="form-label">Tags</label>
-                    <input type="text" className="form-control noteField-note" name='tags' id="tags" />
+                    <input type="text" className="form-control noteField-note" name='tags' id="tags" onChange={onChange} />
+                    <div id="tagHelp" class="form-text" style={{fontSize : "16px", fontWeight : "bold", marginTop : "10px"}}> <i class="fa-solid fa-circle-exclamation fa-lg" style={{"color": "rgb(71, 74, 78)"}}></i> If you want to add more than one tag, then use the <strong>commas</strong> in between. (Eg : Medicines,Home,Health are 3 different Tags)</div>
                 </div>
 
-                <div className="d-flex" style={{justifyContent : "center"}}>
+                <div className="d-flex" style={{ justifyContent: "center" }}>
                     {/* We will disable the Button if the title and description are having length less than 5 */}
                     <button type="submit" className="btn btn-primary mt-3 addNoteBtn" onClick={handleAddNote} disabled={tempNote.title.length < 5 || tempNote.description.length < 5}>Add Note</button>
                 </div>
@@ -80,5 +103,7 @@ export default function AddNote() {
             {/* Adding the Notes Component Here */}
             {/* This will be getting all the notes and displaying it on the page */}
         </div>
+        
     )
+    
 }

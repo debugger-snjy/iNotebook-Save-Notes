@@ -1,7 +1,7 @@
 import './App.css';
 
 // Importing Route and Routes for the Routing
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Home from './Components/Home';
 import Navbar from './Components/Navbar';
 import About from './Components/About';
@@ -11,8 +11,13 @@ import NoteState from './Context/Notes/NoteState';
 import Alert from './Components/Alert';
 import Login from './Components/Login';
 import Signup from './Components/Signup';
+import ErrorPage from './Components/ErrorPage';
+import ContactUs from './Components/ContactUs';
+import User from './Components/User';
 
 function App() {
+    let location = useLocation();
+    console.log("Getting Location Pathname : ",location.pathname);
     return (
         <>
             {/* Adding all other inside it means that we want to use it all them */}
@@ -25,8 +30,7 @@ function App() {
                 {/* Adding the Alert Component which will be modified later */}
                 <Alert title="SAMPLE" message="Your Message will be displayed Here" effect="alert-success" />
 
-
-                <div className="container">
+                <div className="container" id='websiteContent'>
 
                     {/* Adding and Setting the Routers */}
                     <Routes>
@@ -34,6 +38,9 @@ function App() {
                         <Route exact path='/about' element={<About />} />
                         <Route exact path='/addnote' element={<Home />} />
                         <Route exact path='/signup' element={<Signup />} />
+                        <Route exact path='/errorpage' element={<ErrorPage />} />
+                        <Route exact path='/contact' element={<ContactUs />} />
+                        <Route exact path='/user' element={<User />} />
                     </Routes>
 
                 </div>
