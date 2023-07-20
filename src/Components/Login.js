@@ -1,9 +1,22 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import NoteContext from '../Context/Notes/NoteContext';
 
 function Login() {
 
     let navigateTo = useNavigate()
+
+    console.log("Hello Login");
+
+    // Using the function to get the data from the context
+    const contextData = useContext(NoteContext);
+    console.log(contextData.alert);
+
+    useEffect(()=>{
+        if (localStorage.getItem("token")){
+            navigateTo("/addnote")
+        }
+    })
 
     // Function to handle when user gets logged in !
     const handleLogin = async (event) => {
@@ -32,25 +45,34 @@ function Login() {
 
         // Variable to handle the Login Response
         const userToken = await response.json()
-        
+
         console.log(userToken);
 
         // If the user is registered and we get its auth-token,
         // Then we will save that auth-token in the localStorage
         if (userToken.status === "success") {
 
-            // Saving auth-token in localstorage
-            localStorage.setItem("token",userToken.authToken)
+            // Showing the Alert Message
+            contextData.showAlert("Success", userToken.msg, "alert-success")
 
-            // Also redirecting it to the Home Page(Add Note Page)
-            navigateTo("/addnote")
+            setTimeout(() => {
+                // Saving auth-token in localstorage
+                localStorage.setItem("token", userToken.authToken)
+
+                // Also redirecting it to the Home Page(Add Note Page)
+                navigateTo("/addnote")
+            }, 1000);
 
         }
-        else{
+        else {
+
+            // Showing the Alert Message
+            contextData.showAlert("Login Failed", userToken.msg, "alert-danger")
+
             // Setting the status message :
-            document.getElementById("status").innerText = userToken.msg
-            document.getElementById("status").style.color = "red"
-            document.getElementById("status").style.fontWeight = 600;
+            // document.getElementById("status").innerText = userToken.msg
+            // document.getElementById("status").style.color = "red"
+            // document.getElementById("status").style.fontWeight = 600;
         }
 
     }
@@ -91,7 +113,7 @@ function Login() {
                                     <div className="mb-3">
                                         {/* <label for="userPassword" className="form-label">Password</label> */}
                                         <input type="password" className="form-control noteField-login" id="userPassword" placeholder='Password' />
-                                        <div style={{ "textAlign": "right", marginTop : "10px" }}><Link to="/">Forget Password ?</Link></div>
+                                        <div style={{ "textAlign": "right", marginTop: "10px" }}><Link to="/">Forget Password ?</Link></div>
                                     </div>
                                     <div className="mb-3">
                                         <button type="submit" className="btn btn-primary container">Log in</button>
