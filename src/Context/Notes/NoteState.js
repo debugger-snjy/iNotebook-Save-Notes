@@ -365,7 +365,11 @@ const NoteState = (props) => {
 
         // Returning the Date and Time in a form of String
         return `${noteDate} ${noteTime}`;
+<<<<<<< HEAD
     }
+=======
+    }****
+>>>>>>> 8eb678ff30416f49b9ad686b4f135d35de2637bc
 
     return (
 
